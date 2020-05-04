@@ -49,9 +49,8 @@ def get_editprojectform_for(project, **kwargs):
     """
     form = EditProjectForm(**kwargs)
     choices = copy.copy(form.default_currency.choices)
-    choices.sort(
-        key=lambda rates: "" if rates[0] == project.default_currency else rates[0]
-    )
+    choices.sort(key=lambda rates: ""
+                 if rates[0] == project.default_currency else rates[0])
     form.default_currency.choices = choices
     return form
 
@@ -70,17 +69,16 @@ def get_billform_for(project, set_default=True, **kwargs):
     if form.original_currency.data != CurrencyConverter.default:
         choices = copy.copy(form.original_currency.choices)
         choices.remove((CurrencyConverter.default, CurrencyConverter.default))
-        choices.sort(
-            key=lambda rates: "" if rates[0] == project.default_currency else rates[0]
-        )
+        choices.sort(key=lambda rates: ""
+                     if rates[0] == project.default_currency else rates[0])
         form.original_currency.choices = choices
     else:
         form.original_currency.render_kw = {"default": True}
         form.original_currency.data = CurrencyConverter.default
 
     form.original_currency.label = Label(
-        "original_currency", "Currency (Default: %s)" % (project.default_currency)
-    )
+        "original_currency",
+        "Currency (Default: %s)" % (project.default_currency))
     active_members = [(m.id, m.name) for m in project.active_members]
 
     form.payed_for.choices = form.payer.choices = active_members
@@ -92,7 +90,6 @@ def get_billform_for(project, set_default=True, **kwargs):
 
 
 class CommaDecimalField(DecimalField):
-
     """A class to deal with comma in Decimal Field"""
 
     def process_formdata(self, value):
@@ -109,15 +106,14 @@ class CalculatorStringField(StringField):
 
     def process_formdata(self, valuelist):
         if valuelist:
-            message = _(
-                "Not a valid amount or expression. "
-                "Only numbers and + - * / operators "
-                "are accepted."
-            )
+            message = _("Not a valid amount or expression. "
+                        "Only numbers and + - * / operators "
+                        "are accepted.")
             value = str(valuelist[0]).replace(",", ".")
 
             # avoid exponents to prevent expensive calculations i.e 2**9999999999**9999999
-            if not match(r"^[ 0-9\.\+\-\*/\(\)]{0,200}$", value) or "**" in value:
+            if not match(r"^[ 0-9\.\+\-\*/\(\)]{0,200}$",
+                         value) or "**" in value:
                 raise ValueError(Markup(message))
 
             valuelist[0] = str(eval_arithmetic_expression(value))
@@ -128,16 +124,16 @@ class CalculatorStringField(StringField):
 class EditProjectForm(FlaskForm):
     name = StringField(_("Project name"), validators=[DataRequired()])
     password = StringField(_("Private code"), validators=[DataRequired()])
-    contact_email = StringField(_("Email"), validators=[DataRequired(), Email()])
+    contact_email = StringField(_("Email"),
+                                validators=[DataRequired(),
+                                            Email()])
     project_history = BooleanField(_("Enable project history"))
     ip_recording = BooleanField(_("Use IP tracking for project history"))
     currency_helper = CurrencyConverter()
     default_currency = SelectField(
         _("Default Currency"),
-        choices=[
-            (currency_name, currency_name)
-            for currency_name in currency_helper.get_currencies()
-        ],
+        choices=[(currency_name, currency_name)
+                 for currency_name in currency_helper.get_currencies()],
         validators=[DataRequired()],
     )
 
@@ -185,7 +181,10 @@ class EditProjectForm(FlaskForm):
 class UploadForm(FlaskForm):
     file = FileField(
         "JSON",
-        validators=[FileRequired(), FileAllowed(["json", "JSON"], "JSON only!")],
+        validators=[
+            FileRequired(),
+            FileAllowed(["json", "JSON"], "JSON only!")
+        ],
         description=_("Import previously exported JSON file"),
     )
     submit = SubmitField(_("Import"))
@@ -200,7 +199,8 @@ class ProjectForm(EditProjectForm):
         # WTForms Boolean Fields don't insert the default value when the
         # request doesn't include any value the way that other fields do,
         # so we'll manually do it here
-        self.project_history.data = LoggingMode.default() != LoggingMode.DISABLED
+        self.project_history.data = LoggingMode.default(
+        ) != LoggingMode.DISABLED
         self.ip_recording.data = LoggingMode.default() == LoggingMode.RECORD_IP
         return super().save()
 
@@ -222,7 +222,8 @@ class AuthenticationForm(FlaskForm):
 
 
 class AdminAuthenticationForm(FlaskForm):
-    admin_password = PasswordField(_("Admin password"), validators=[DataRequired()])
+    admin_password = PasswordField(_("Admin password"),
+                                   validators=[DataRequired()])
     submit = SubmitField(_("Get in"))
 
 
@@ -241,24 +242,24 @@ class ResetPasswordForm(FlaskForm):
         EqualTo("password_confirmation", message=_("Password mismatch")),
     ]
     password = PasswordField(_("Password"), validators=password_validators)
-    password_confirmation = PasswordField(
-        _("Password confirmation"), validators=[DataRequired()]
-    )
+    password_confirmation = PasswordField(_("Password confirmation"),
+                                          validators=[DataRequired()])
     submit = SubmitField(_("Reset password"))
 
 
 class BillForm(FlaskForm):
-    date = DateField(_("Date"), validators=[DataRequired()], default=datetime.now)
+    date = DateField(_("Date"),
+                     validators=[DataRequired()],
+                     default=datetime.now)
     what = StringField(_("What?"), validators=[DataRequired()])
     payer = SelectField(_("Payer"), validators=[DataRequired()], coerce=int)
-    amount = CalculatorStringField(_("Amount paid"), validators=[DataRequired()])
+    amount = CalculatorStringField(_("Amount paid"),
+                                   validators=[DataRequired()])
     currency_helper = CurrencyConverter()
     original_currency = SelectField(
         _("Currency"),
-        choices=[
-            (currency_name, currency_name)
-            for currency_name in currency_helper.get_currencies()
-        ],
+        choices=[(currency_name, currency_name)
+                 for currency_name in currency_helper.get_currencies()],
         validators=[DataRequired()],
     )
     external_link = URLField(
@@ -266,9 +267,9 @@ class BillForm(FlaskForm):
         validators=[Optional()],
         description=_("A link to an external document, related to this bill"),
     )
-    payed_for = SelectMultipleField(
-        _("For whom?"), validators=[DataRequired()], coerce=int
-    )
+    payed_for = SelectMultipleField(_("For whom?"),
+                                    validators=[DataRequired()],
+                                    coerce=int)
     submit = SubmitField(_("Submit"))
     submit2 = SubmitField(_("Submit and add a new one"))
 
@@ -278,11 +279,12 @@ class BillForm(FlaskForm):
         bill.what = self.what.data
         bill.external_link = self.external_link.data
         bill.date = self.date.data
-        bill.owers = [Person.query.get(ower, project) for ower in self.payed_for.data]
+        bill.owers = [
+            Person.query.get(ower, project) for ower in self.payed_for.data
+        ]
         bill.original_currency = self.original_currency.data
         bill.converted_amount = self.currency_helper.exchange_currency(
-            bill.amount, bill.original_currency, project.default_currency
-        )
+            bill.amount, bill.original_currency, project.default_currency)
         return bill
 
     def fake_form(self, bill, project):
@@ -291,11 +293,12 @@ class BillForm(FlaskForm):
         bill.what = self.what
         bill.external_link = ""
         bill.date = self.date
-        bill.owers = [Person.query.get(ower, project) for ower in self.payed_for]
+        bill.owers = [
+            Person.query.get(ower, project) for ower in self.payed_for
+        ]
         bill.original_currency = CurrencyConverter.default
         bill.converted_amount = self.currency_helper.exchange_currency(
-            bill.amount, bill.original_currency, project.default_currency
-        )
+            bill.amount, bill.original_currency, project.default_currency)
 
         return bill
 
@@ -317,10 +320,16 @@ class BillForm(FlaskForm):
 
 
 class MemberForm(FlaskForm):
-    name = StringField(_("Name"), validators=[DataRequired()], filters=[strip_filter])
+    name = StringField(_("Name"),
+                       validators=[DataRequired()],
+                       filters=[strip_filter])
 
-    weight_validators = [NumberRange(min=0.1, message=_("Weights should be positive"))]
-    weight = CommaDecimalField(_("Weight"), default=1, validators=weight_validators)
+    weight_validators = [
+        NumberRange(min=0.1, message=_("Weights should be positive"))
+    ]
+    weight = CommaDecimalField(_("Weight"),
+                               default=1,
+                               validators=weight_validators)
     submit = SubmitField(_("Add"))
 
     def __init__(self, project, edit=False, *args, **kwargs):
@@ -331,14 +340,11 @@ class MemberForm(FlaskForm):
     def validate_name(form, field):
         if field.data == form.name.default:
             raise ValidationError(_("User name incorrect"))
-        if (
-            not form.edit
-            and Person.query.filter(
+        if (not form.edit and Person.query.filter(
                 Person.name == field.data,
                 Person.project == form.project,
                 Person.activated == True,
-            ).all()
-        ):  # NOQA
+        ).all()):  # NOQA
             raise ValidationError(_("This project already have this member"))
 
     def save(self, project, person):
@@ -364,5 +370,4 @@ class InviteForm(FlaskForm):
                 email_validator.validate_email(email)
             except email_validator.EmailNotValidError:
                 raise ValidationError(
-                    _("The email %(email)s is not valid", email=email)
-                )
+                    _("The email %(email)s is not valid", email=email))

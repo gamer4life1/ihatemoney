@@ -18,14 +18,12 @@ restful_api = Api(api)
 restful_api.add_resource(ProjectsHandler, "/projects")
 restful_api.add_resource(ProjectHandler, "/projects/<string:project_id>")
 restful_api.add_resource(TokenHandler, "/projects/<string:project_id>/token")
-restful_api.add_resource(MembersHandler, "/projects/<string:project_id>/members")
+restful_api.add_resource(MembersHandler,
+                         "/projects/<string:project_id>/members")
+restful_api.add_resource(ProjectStatsHandler,
+                         "/projects/<string:project_id>/statistics")
 restful_api.add_resource(
-    ProjectStatsHandler, "/projects/<string:project_id>/statistics"
-)
-restful_api.add_resource(
-    MemberHandler, "/projects/<string:project_id>/members/<int:member_id>"
-)
+    MemberHandler, "/projects/<string:project_id>/members/<int:member_id>")
 restful_api.add_resource(BillsHandler, "/projects/<string:project_id>/bills")
-restful_api.add_resource(
-    BillHandler, "/projects/<string:project_id>/bills/<int:bill_id>"
-)
+restful_api.add_resource(BillHandler,
+                         "/projects/<string:project_id>/bills/<int:bill_id>")

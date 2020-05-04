@@ -31,7 +31,8 @@ def need_auth(f):
         # Use Basic Auth
         if auth and project_id and auth.username == project_id:
             project = Project.query.get(auth.username)
-            if project and check_password_hash(project.password, auth.password):
+            if project and check_password_hash(project.password,
+                                               auth.password):
                 # The whole project object will be passed instead of project_id
                 kwargs.pop("project_id")
                 return f(*args, project=project, **kwargs)
@@ -43,7 +44,8 @@ def need_auth(f):
                 auth_token = auth_header.split(" ")[1]
             except IndexError:
                 abort(401)
-            project_id = Project.verify_token(auth_token, token_type="non_timed_token")
+            project_id = Project.verify_token(auth_token,
+                                              token_type="non_timed_token")
             if auth_token and project_id:
                 project = Project.query.get(project_id)
                 if project:
@@ -57,7 +59,8 @@ def need_auth(f):
 class ProjectsHandler(Resource):
     def post(self):
         form = ProjectForm(meta={"csrf": False})
-        if form.validate() and current_app.config.get("ALLOW_PUBLIC_PROJECT_CREATION"):
+        if form.validate() and current_app.config.get(
+                "ALLOW_PUBLIC_PROJECT_CREATION"):
             project = form.save()
             db.session.add(project)
             db.session.commit()
@@ -78,7 +81,8 @@ class ProjectHandler(Resource):
 
     def put(self, project):
         form = EditProjectForm(meta={"csrf": False})
-        if form.validate() and current_app.config.get("ALLOW_PUBLIC_PROJECT_CREATION"):
+        if form.validate() and current_app.config.get(
+                "ALLOW_PUBLIC_PROJECT_CREATION"):
             form.update(project)
             db.session.commit()
             return "UPDATED"

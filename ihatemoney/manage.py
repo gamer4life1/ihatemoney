@@ -18,7 +18,6 @@ from ihatemoney.utils import create_jinja_env
 
 
 class GeneratePasswordHash(Command):
-
     """Get password from user and hash it without printing it in clear text."""
 
     def run(self):
@@ -43,14 +42,11 @@ class GenerateConfig(Command):
 
     @staticmethod
     def gen_secret_key():
-        return "".join(
-            [
-                random.SystemRandom().choice(
-                    "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)"
-                )
-                for i in range(50)
-            ]
-        )
+        return "".join([
+            random.SystemRandom().choice(
+                "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)")
+            for i in range(50)
+        ])
 
     def run(self, config_file):
         env = create_jinja_env("conf-templates", strict_rendering=True)
@@ -65,8 +61,7 @@ class GenerateConfig(Command):
                 bin_path=bin_path,
                 sys_prefix=sys.prefix,
                 secret_key=self.gen_secret_key(),
-            )
-        )
+            ))
 
 
 class DeleteProject(Command):

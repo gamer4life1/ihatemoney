@@ -14,11 +14,10 @@ def get_history_queries(project):
 
     project_changes = ProjectVersion.query.filter_by(id=project.id)
 
-    bill_changes = (
-        BillVersion.query.with_entities(BillVersion.id.label("bill_version_id"))
-        .join(Person, BillVersion.payer_id == Person.id)
-        .filter(Person.project_id == project.id)
-    )
+    bill_changes = (BillVersion.query.with_entities(
+        BillVersion.id.label("bill_version_id")).join(
+            Person, BillVersion.payer_id == Person.id).filter(
+                Person.project_id == project.id))
     sub_query = bill_changes.subquery()
     bill_changes = BillVersion.query.filter(BillVersion.id.in_(sub_query))
 
@@ -58,7 +57,9 @@ def describe_owers_change(version, human_readable_names):
         return added_ids, removed_ids
 
     added = [describe_version(after_owers[ower_id]) for ower_id in added_ids]
-    removed = [describe_version(before_owers[ower_id]) for ower_id in removed_ids]
+    removed = [
+        describe_version(before_owers[ower_id]) for ower_id in removed_ids
+    ]
 
     return added, removed
 
@@ -71,7 +72,11 @@ def get_history(project, human_readable_names=True):
     """
     person_query, project_query, bill_query = get_history_queries(project)
     history = []
-    for version_list in [person_query.all(), project_query.all(), bill_query.all()]:
+    for version_list in [
+            person_query.all(),
+            project_query.all(),
+            bill_query.all()
+    ]:
         for version in version_list:
             object_type = {
                 "Person": _("Participant"),
@@ -86,11 +91,16 @@ def get_history(project, human_readable_names=True):
                 object_str = describe_version(version)
 
             common_properties = {
-                "time": version.transaction.issued_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                "operation_type": version.operation_type,
-                "object_type": object_type,
-                "object_desc": object_str,
-                "ip": version.transaction.remote_addr,
+                "time":
+                version.transaction.issued_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "operation_type":
+                version.operation_type,
+                "object_type":
+                object_type,
+                "object_desc":
+                object_str,
+                "ip":
+                version.transaction.remote_addr,
             }
 
             if version.operation_type == Operation.UPDATE:
@@ -101,8 +111,7 @@ def get_history(project, human_readable_names=True):
                     if isinstance(version, BillVersion):
                         if version.owers != version.previous.owers:
                             added, removed = describe_owers_change(
-                                version, human_readable_names
-                            )
+                                version, human_readable_names)
 
                             if added:
                                 changeset["owers_added"] = (None, added)
@@ -110,14 +119,16 @@ def get_history(project, human_readable_names=True):
                                 changeset["owers_removed"] = (None, removed)
 
                         # Remove converted_amount if amount changed in the same way.
-                        if (
-                            "amount" in changeset
-                            and "converted_amount" in changeset
-                            and changeset["amount"] == changeset["converted_amount"]
-                        ):
+                        if ("amount" in changeset
+                                and "converted_amount" in changeset
+                                and changeset["amount"] ==
+                                changeset["converted_amount"]):
                             del changeset["converted_amount"]
 
-                    for (prop, (val_before, val_after),) in changeset.items():
+                    for (
+                            prop,
+                        (val_before, val_after),
+                    ) in changeset.items():
                         if human_readable_names:
                             if prop == "payer_id":
                                 prop = "payer"
@@ -125,8 +136,7 @@ def get_history(project, human_readable_names=True):
                                     val_after = describe_version(version.payer)
                                 if version.previous and val_before is not None:
                                     val_before = describe_version(
-                                        version.previous.payer
-                                    )
+                                        version.previous.payer)
                                 else:
                                     val_after = None
 

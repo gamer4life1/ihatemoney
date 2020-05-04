@@ -40,8 +40,7 @@ def setup_database(app):
     if sqlalchemy_url.startswith("sqlite:////tmp"):
         warnings.warn(
             "The database is currently stored in /tmp and might be lost at "
-            "next reboot."
-        )
+            "next reboot.")
 
     db.init_app(app)
     db.app = app
@@ -84,8 +83,8 @@ def validate_configuration(app):
 
     if app.config["SECRET_KEY"] == default_settings.SECRET_KEY:
         warnings.warn(
-            "Running a server without changing the SECRET_KEY can lead to"
-            + " user impersonation. Please update your configuration file.",
+            "Running a server without changing the SECRET_KEY can lead to" +
+            " user impersonation. Please update your configuration file.",
             UserWarning,
         )
     # Deprecations
@@ -97,15 +96,20 @@ def validate_configuration(app):
             UserWarning,
         )
         if "MAIL_DEFAULT_SENDER" not in app.config:
-            app.config["MAIL_DEFAULT_SENDER"] = default_settings.DEFAULT_MAIL_SENDER
+            app.config[
+                "MAIL_DEFAULT_SENDER"] = default_settings.DEFAULT_MAIL_SENDER
 
-    if "pbkdf2:" not in app.config["ADMIN_PASSWORD"] and app.config["ADMIN_PASSWORD"]:
+    if "pbkdf2:" not in app.config["ADMIN_PASSWORD"] and app.config[
+            "ADMIN_PASSWORD"]:
         # Since 2.0
         warnings.warn(
             "The way Ihatemoney stores your ADMIN_PASSWORD has changed. You are using an unhashed"
-            + " ADMIN_PASSWORD, which is not supported anymore and won't let you access your admin"
-            + " endpoints. Please use the command 'ihatemoney generate_password_hash'"
-            + " to generate a proper password HASH and copy the output to the value of"
+            +
+            " ADMIN_PASSWORD, which is not supported anymore and won't let you access your admin"
+            +
+            " endpoints. Please use the command 'ihatemoney generate_password_hash'"
+            +
+            " to generate a proper password HASH and copy the output to the value of"
             + " ADMIN_PASSWORD in your settings file.",
             UserWarning,
         )
@@ -115,9 +119,9 @@ def page_not_found(e):
     return render_template("404.html", root="main"), 404
 
 
-def create_app(
-    configuration=None, instance_path="/etc/ihatemoney", instance_relative_config=True
-):
+def create_app(configuration=None,
+               instance_path="/etc/ihatemoney",
+               instance_relative_config=True):
     app = Flask(
         __name__,
         instance_path=instance_path,
@@ -162,7 +166,8 @@ def create_app(
         # languages" header.
         lang = session.get(
             "lang",
-            request.accept_languages.best_match(app.config["SUPPORTED_LANGUAGES"]),
+            request.accept_languages.best_match(
+                app.config["SUPPORTED_LANGUAGES"]),
         )
         setattr(g, "lang", lang)
         return lang

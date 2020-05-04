@@ -86,38 +86,29 @@ class PatchedRelationShipBuilder(RelationshipBuilder):
         ]
 
         association_exists = sa.exists(
-            sa.select([1])
-            .where(
+            sa.select([1]).where(
                 sa.and_(
-                    association_table_alias.c[tx_column] <= getattr(obj, tx_column),
-                    association_table_alias.c[join_column]
-                    == getattr(obj, object_join_column),
+                    association_table_alias.c[tx_column] <= getattr(
+                        obj, tx_column),
+                    association_table_alias.c[join_column] == getattr(
+                        obj, object_join_column),
                     *[
-                        association_col
-                        == self.association_version_table.c[association_col.name]
+                        association_col == self.association_version_table.c[
+                            association_col.name]
                         for association_col in association_cols
-                    ]
-                )
-            )
-            .group_by(*association_cols)
-            .having(
-                sa.func.max(association_table_alias.c[tx_column])
-                == self.association_version_table.c[tx_column]
-            )
-            .correlate(self.association_version_table)
-        )
+                    ])).group_by(*association_cols).having(
+                        sa.func.max(association_table_alias.c[tx_column]) ==
+                        self.association_version_table.c[tx_column]).correlate(
+                            self.association_version_table))
         return sa.exists(
-            sa.select([1])
-            .where(
+            sa.select([1]).where(
                 sa.and_(
                     reflector(self.property.primaryjoin),
                     association_exists,
-                    self.association_version_table.c.operation_type != Operation.DELETE,
+                    self.association_version_table.c.operation_type !=
+                    Operation.DELETE,
                     adapt_columns(self.property.secondaryjoin),
-                )
-            )
-            .correlate(self.local_cls, self.remote_cls)
-        )
+                )).correlate(self.local_cls, self.remote_cls))
 
 
 class PatchedBuilder(Builder):

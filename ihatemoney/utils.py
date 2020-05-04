@@ -34,7 +34,6 @@ def slugify(value):
 
 
 class Redirect303(HTTPException, RoutingException):
-
     """Raise if the map requests a redirect. This is for example the case if
     `strict_slashes` are activated and an url that requires a trailing slash.
 
@@ -52,7 +51,6 @@ class Redirect303(HTTPException, RoutingException):
 
 
 class PrefixedWSGI(object):
-
     """
     Wrap the application in this middleware and configure the
     front-end server to add these headers, to let you quietly bind
@@ -76,7 +74,7 @@ class PrefixedWSGI(object):
             environ["SCRIPT_NAME"] = script_name
             path_info = environ["PATH_INFO"]
             if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name) :]  # NOQA
+                environ["PATH_INFO"] = path_info[len(script_name):]  # NOQA
 
         scheme = environ.get("HTTP_X_SCHEME", "")
         if scheme:
@@ -149,7 +147,8 @@ class LoginThrottler:
         self._attempts = {}
 
     def get_remaining_attempts(self, ip):
-        return self._max_attempts - self._attempts.get(ip, [datetime.now(), 0])[1]
+        return self._max_attempts - self._attempts.get(ip,
+                                                       [datetime.now(), 0])[1]
 
     def increment_attempts_counter(self, ip):
         # Reset all attempt counters when they get hungry for memory
@@ -164,7 +163,8 @@ class LoginThrottler:
         if self._attempts.get(ip) is None:
             return True
         # When the delay is expired, reset the counter
-        if datetime.now() - self._attempts.get(ip)[0] > timedelta(minutes=self._delay):
+        if datetime.now() - self._attempts.get(ip)[0] > timedelta(
+                minutes=self._delay):
             self.reset(ip)
             return True
         if self._attempts.get(ip)[1] >= self._max_attempts:
@@ -227,7 +227,8 @@ def eval_arithmetic_expression(expr):
         if isinstance(node, ast.Num):  # <number>
             return node.n
         elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
-            return operators[type(node.op)](_eval(node.left), _eval(node.right))
+            return operators[type(node.op)](_eval(node.left),
+                                            _eval(node.right))
         elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
             return operators[type(node.op)](_eval(node.operand))
         else:

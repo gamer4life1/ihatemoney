@@ -84,7 +84,8 @@ def requires_admin(bypass=None):
         @wraps(f)
         def admin_auth(*args, **kws):
             is_admin_auth_bypassed = False
-            if bypass is not None and current_app.config.get(bypass[0]) == bypass[1]:
+            if bypass is not None and current_app.config.get(
+                    bypass[0]) == bypass[1]:
                 is_admin_auth_bypassed = True
             is_admin = session.get("is_admin")
             if is_admin or is_admin_auth_bypassed:
@@ -116,8 +117,7 @@ def set_show_admin_dashboard_link(endpoint, values):
 
     g.show_admin_dashboard_link = (
         current_app.config["ACTIVATE_ADMIN_DASHBOARD"]
-        and current_app.config["ADMIN_PASSWORD"]
-    )
+        and current_app.config["ADMIN_PASSWORD"])
 
 
 @main.url_value_preprocessor
@@ -137,7 +137,8 @@ def pull_project(endpoint, values):
     if project_id:
         project = Project.query.get(project_id)
         if not project:
-            raise Redirect303(url_for(".create_project", project_id=project_id))
+            raise Redirect303(url_for(".create_project",
+                                      project_id=project_id))
 
         is_admin = session.get("is_admin")
         if session.get(project.id) or is_admin:
@@ -170,9 +171,8 @@ def admin():
             )
         if form.validate():
             # Valid password
-            if check_password_hash(
-                current_app.config["ADMIN_PASSWORD"], form.admin_password.data
-            ):
+            if check_password_hash(current_app.config["ADMIN_PASSWORD"],
+                                   form.admin_password.data):
                 session["is_admin"] = True
                 session.update()
                 login_throttler.reset(client_ip)
@@ -217,9 +217,9 @@ def authenticate(project_id=None):
     if not project:
         # If the user try to connect to an unexisting project, we will
         # propose him a link to the creation form.
-        return render_template(
-            "authenticate.html", form=form, create_project=project_id
-        )
+        return render_template("authenticate.html",
+                               form=form,
+                               create_project=project_id)
 
     # if credentials are already in session, redirect
     if session.get(project_id):
@@ -228,11 +228,9 @@ def authenticate(project_id=None):
 
     # else do form authentication or token authentication
     is_post_auth = request.method == "POST" and form.validate()
-    if (
-        is_post_auth
-        and check_password_hash(project.password, form.password.data)
-        or token_auth
-    ):
+    if (is_post_auth
+            and check_password_hash(project.password, form.password.data)
+            or token_auth):
         # maintain a list of visited projects
         if "projects" not in session:
             session["projects"] = []
@@ -244,7 +242,8 @@ def authenticate(project_id=None):
         session.update()
         setattr(g, "project", project)
         return redirect(url_for(".list_bills"))
-    if is_post_auth and not check_password_hash(project.password, form.password.data):
+    if is_post_auth and not check_password_hash(project.password,
+                                                form.password.data):
         msg = _("This private code is not the right one")
         form.errors["password"] = [msg]
 
@@ -257,8 +256,7 @@ def home():
     auth_form = AuthenticationForm()
     is_demo_project_activated = current_app.config["ACTIVATE_DEMO_PROJECT"]
     is_public_project_creation_allowed = current_app.config[
-        "ALLOW_PUBLIC_PROJECT_CREATION"
-    ]
+        "ALLOW_PUBLIC_PROJECT_CREATION"]
 
     return render_template(
         "home.html",
@@ -299,22 +297,25 @@ def create_project():
             g.project = project
 
             message_title = _(
-                "You have just created '%(project)s' " "to share your expenses",
+                "You have just created '%(project)s' "
+                "to share your expenses",
                 project=g.project.name,
             )
 
             message_body = render_localized_template("reminder_mail")
 
-            msg = Message(
-                message_title, body=message_body, recipients=[project.contact_email]
-            )
+            msg = Message(message_title,
+                          body=message_body,
+                          recipients=[project.contact_email])
             try:
                 current_app.mail.send(msg)
             except SMTPRecipientsRefused:
-                flash(_("Error while sending reminder email"), category="danger")
+                flash(_("Error while sending reminder email"),
+                      category="danger")
 
             # redirect the user to the next step (invite)
-            flash(_("The project identifier is %(project)s", project=project.id))
+            flash(
+                _("The project identifier is %(project)s", project=project.id))
             return redirect(url_for(".list_bills", project_id=project.id))
 
     return render_template("create_project.html", form=form)
@@ -331,12 +332,10 @@ def remind_password():
             current_app.mail.send(
                 Message(
                     "password recovery",
-                    body=render_localized_template(
-                        "password_reminder", project=project
-                    ),
+                    body=render_localized_template("password_reminder",
+                                                   project=project),
                     recipients=[project.contact_email],
-                )
-            )
+                ))
             return redirect(url_for(".password_reminder_sent"))
 
     return render_template("password_reminder.html", form=form)
@@ -352,19 +351,19 @@ def reset_password():
     form = ResetPasswordForm()
     token = request.args.get("token")
     if not token:
-        return render_template(
-            "reset_password.html", form=form, error=_("No token provided")
-        )
+        return render_template("reset_password.html",
+                               form=form,
+                               error=_("No token provided"))
     project_id = Project.verify_token(token)
     if not project_id:
-        return render_template(
-            "reset_password.html", form=form, error=_("Invalid token")
-        )
+        return render_template("reset_password.html",
+                               form=form,
+                               error=_("Invalid token"))
     project = Project.query.get(project_id)
     if not project:
-        return render_template(
-            "reset_password.html", form=form, error=_("Unknown project")
-        )
+        return render_template("reset_password.html",
+                               form=form,
+                               error=_("Unknown project"))
 
     if request.method == "POST" and form.validate():
         project.password = generate_password_hash(form.password.data)
@@ -400,8 +399,8 @@ def edit_project():
                     bill.original_currency = project.default_currency
 
                 bill.converted_amount = CurrencyConverter().exchange_currency(
-                    bill.amount, bill.original_currency, project.default_currency
-                )
+                    bill.amount, bill.original_currency,
+                    project.default_currency)
                 db.session.add(bill)
 
         db.session.add(project)
@@ -576,13 +575,16 @@ def invite():
             # send the email
             message_body = render_localized_template("invitation_mail")
             message_title = _(
-                "You have been invited to share your " "expenses for %(project)s",
+                "You have been invited to share your "
+                "expenses for %(project)s",
                 project=g.project.name,
             )
             msg = Message(
                 message_title,
                 body=message_body,
-                recipients=[email.strip() for email in form.emails.data.split(",")],
+                recipients=[
+                    email.strip() for email in form.emails.data.split(",")
+                ],
             )
             current_app.mail.send(msg)
             flash(_("Your invitations have been sent"))
@@ -598,11 +600,8 @@ def list_bills():
     if "last_selected_payer" in session:
         bill_form.payer.data = session["last_selected_payer"]
     # Preload the "owers" relationship for all bills
-    bills = (
-        g.project.get_bills()
-        .options(orm.subqueryload(Bill.owers))
-        .paginate(per_page=100, error_out=True)
-    )
+    bills = (g.project.get_bills().options(orm.subqueryload(
+        Bill.owers)).paginate(per_page=100, error_out=True))
 
     return render_template(
         "list_bills.html",
@@ -630,11 +629,8 @@ def add_member():
 
 @main.route("/<project_id>/members/<member_id>/reactivate", methods=["POST"])
 def reactivate(member_id):
-    person = (
-        Person.query.filter(Person.id == member_id)
-        .filter(Project.id == g.project.id)
-        .all()
-    )
+    person = (Person.query.filter(Person.id == member_id).filter(
+        Project.id == g.project.id).all())
     if person:
         person[0].activated = True
         db.session.commit()
@@ -653,8 +649,7 @@ def remove_member(member_id):
                     "appear in the users list until its balance "
                     "becomes zero.",
                     name=member.name,
-                )
-            )
+                ))
         else:
             flash(_("User '%(name)s' has been removed", name=member.name))
     return redirect(url_for(".list_bills"))
@@ -749,7 +744,9 @@ def change_lang(lang):
 def settle_bill():
     """Compute the sum each one have to pay to each other and display it"""
     bills = g.project.get_transactions_to_settle_bill()
-    return render_template("settle_bills.html", bills=bills, current_view="settle_bill")
+    return render_template("settle_bills.html",
+                           bills=bills,
+                           current_view="settle_bill")
 
 
 @main.route("/<project_id>/history")
@@ -807,7 +804,8 @@ def statistics():
 @main.route("/dashboard")
 @requires_admin()
 def dashboard():
-    is_admin_dashboard_activated = current_app.config["ACTIVATE_ADMIN_DASHBOARD"]
+    is_admin_dashboard_activated = current_app.config[
+        "ACTIVATE_ADMIN_DASHBOARD"]
     return render_template(
         "dashboard.html",
         projects=Project.query.all(),

@@ -8,7 +8,8 @@ class Singleton(type):
 
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+            cls._instances[cls] = super(Singleton,
+                                        cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
 
@@ -32,11 +33,8 @@ class CurrencyConverter(object, metaclass=Singleton):
         return rates
 
     def exchange_currency(self, amount, source_currency, dest_currency):
-        if (
-            source_currency == dest_currency
-            or source_currency == self.default
-            or dest_currency == self.default
-        ):
+        if (source_currency == dest_currency or source_currency == self.default
+                or dest_currency == self.default):
             return amount
 
         rates = self.get_rates()
