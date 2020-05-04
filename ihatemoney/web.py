@@ -8,58 +8,59 @@ Basically, this blueprint takes care of the authentication and provides
 some shortcuts to make your life better when coding (see `pull_project`
 and `add_project_id` for a quick overview)
 """
-from datetime import datetime
-from functools import wraps
 import json
 import os
+from datetime import datetime
+from functools import wraps
 from smtplib import SMTPRecipientsRefused
 
 from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
-from flask import (
-    Blueprint,
-    abort,
-    current_app,
-    flash,
-    g,
-    redirect,
-    render_template,
-    request,
-    send_file,
-    send_from_directory,
-    session,
-    url_for,
-)
+from flask import abort
+from flask import Blueprint
+from flask import current_app
+from flask import flash
+from flask import g
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import send_file
+from flask import send_from_directory
+from flask import session
+from flask import url_for
 from flask_babel import gettext as _
 from flask_mail import Message
-from ihatemoney.currency_convertor import CurrencyConverter
-from ihatemoney.forms import (
-    AdminAuthenticationForm,
-    AuthenticationForm,
-    InviteForm,
-    MemberForm,
-    PasswordReminder,
-    ProjectForm,
-    ResetPasswordForm,
-    UploadForm,
-    get_billform_for,
-    get_editprojectform_for,
-)
-from ihatemoney.history import get_history, get_history_queries
-from ihatemoney.models import Bill, LoggingMode, Person, Project, db
-from ihatemoney.utils import (
-    LoginThrottler,
-    Redirect303,
-    get_members,
-    list_of_dicts2csv,
-    list_of_dicts2json,
-    render_localized_template,
-    same_bill,
-)
 from sqlalchemy import orm
 from sqlalchemy_continuum import Operation
 from werkzeug.exceptions import NotFound
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
+from werkzeug.security import generate_password_hash
+
+from ihatemoney.currency_convertor import CurrencyConverter
+from ihatemoney.forms import AdminAuthenticationForm
+from ihatemoney.forms import AuthenticationForm
+from ihatemoney.forms import get_billform_for
+from ihatemoney.forms import get_editprojectform_for
+from ihatemoney.forms import InviteForm
+from ihatemoney.forms import MemberForm
+from ihatemoney.forms import PasswordReminder
+from ihatemoney.forms import ProjectForm
+from ihatemoney.forms import ResetPasswordForm
+from ihatemoney.forms import UploadForm
+from ihatemoney.history import get_history
+from ihatemoney.history import get_history_queries
+from ihatemoney.models import Bill
+from ihatemoney.models import db
+from ihatemoney.models import LoggingMode
+from ihatemoney.models import Person
+from ihatemoney.models import Project
+from ihatemoney.utils import get_members
+from ihatemoney.utils import list_of_dicts2csv
+from ihatemoney.utils import list_of_dicts2json
+from ihatemoney.utils import LoginThrottler
+from ihatemoney.utils import Redirect303
+from ihatemoney.utils import render_localized_template
+from ihatemoney.utils import same_bill
 
 main = Blueprint("main", __name__)
 

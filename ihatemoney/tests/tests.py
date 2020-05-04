@@ -1,23 +1,32 @@
 import base64
-from collections import defaultdict
 import datetime
 import io
 import json
 import os
 import re
-from time import sleep
 import unittest
-from unittest.mock import MagicMock, patch
+from collections import defaultdict
+from time import sleep
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 from flask import session
 from flask_testing import TestCase
-from ihatemoney import history, models, utils
-from ihatemoney.currency_convertor import CurrencyConverter
-from ihatemoney.manage import DeleteProject, GenerateConfig, GeneratePasswordHash
-from ihatemoney.run import create_app, db, load_configuration
-from ihatemoney.versioning import LoggingMode
 from sqlalchemy import orm
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
+from werkzeug.security import generate_password_hash
+
+from ihatemoney import history
+from ihatemoney import models
+from ihatemoney import utils
+from ihatemoney.currency_convertor import CurrencyConverter
+from ihatemoney.manage import DeleteProject
+from ihatemoney.manage import GenerateConfig
+from ihatemoney.manage import GeneratePasswordHash
+from ihatemoney.run import create_app
+from ihatemoney.run import db
+from ihatemoney.run import load_configuration
+from ihatemoney.versioning import LoggingMode
 
 # Unset configuration file env var if previously set
 os.environ.pop("IHATEMONEY_SETTINGS_FILE_PATH", None)

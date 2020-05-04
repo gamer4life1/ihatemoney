@@ -1,16 +1,20 @@
 #!/usr/bin/env python
-
 import getpass
 import os
 import random
 import sys
 
-from flask_migrate import Migrate, MigrateCommand
-from flask_script import Command, Manager, Option
-from ihatemoney.models import Project, db
+from flask_migrate import Migrate
+from flask_migrate import MigrateCommand
+from flask_script import Command
+from flask_script import Manager
+from flask_script import Option
+from werkzeug.security import generate_password_hash
+
+from ihatemoney.models import db
+from ihatemoney.models import Project
 from ihatemoney.run import create_app
 from ihatemoney.utils import create_jinja_env
-from werkzeug.security import generate_password_hash
 
 
 class GeneratePasswordHash(Command):

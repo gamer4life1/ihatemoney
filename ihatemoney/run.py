@@ -1,24 +1,28 @@
-import os
 import os.path
 import warnings
 
-from flask import Flask, g, render_template, request, session
+from flask import Flask
+from flask import g
+from flask import render_template
+from flask import request
+from flask import session
 from flask_babel import Babel
 from flask_mail import Mail
-from flask_migrate import Migrate, stamp, upgrade
+from flask_migrate import Migrate
+from flask_migrate import stamp
+from flask_migrate import upgrade
+from werkzeug.middleware.proxy_fix import ProxyFix
+
 from ihatemoney import default_settings
 from ihatemoney.api.v1 import api as apiv1
 from ihatemoney.currency_convertor import CurrencyConverter
 from ihatemoney.models import db
-from ihatemoney.utils import (
-    IhmJSONEncoder,
-    PrefixedWSGI,
-    locale_from_iso,
-    minimal_round,
-    static_include,
-)
+from ihatemoney.utils import IhmJSONEncoder
+from ihatemoney.utils import locale_from_iso
+from ihatemoney.utils import minimal_round
+from ihatemoney.utils import PrefixedWSGI
+from ihatemoney.utils import static_include
 from ihatemoney.web import main as web_interface
-from werkzeug.middleware.proxy_fix import ProxyFix
 
 
 def setup_database(app):

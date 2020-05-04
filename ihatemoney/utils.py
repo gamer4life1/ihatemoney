@@ -1,18 +1,24 @@
 import ast
 import csv
-from datetime import datetime, timedelta
-from enum import Enum
-from io import BytesIO, StringIO
-from json import JSONEncoder, dumps
 import operator
 import os
 import re
+from datetime import datetime
+from datetime import timedelta
+from enum import Enum
+from io import BytesIO
+from io import StringIO
+from json import dumps
+from json import JSONEncoder
 
-from babel import Locale
-from flask import current_app, redirect, render_template
-from flask_babel import get_locale
 import jinja2
-from werkzeug.routing import HTTPException, RoutingException
+from babel import Locale
+from flask import current_app
+from flask import redirect
+from flask import render_template
+from flask_babel import get_locale
+from werkzeug.routing import HTTPException
+from werkzeug.routing import RoutingException
 
 
 def slugify(value):

@@ -32,13 +32,13 @@ Source code reproduced under their license:
     OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
     ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-
 import sqlalchemy as sa
 from sqlalchemy_continuum import Operation
 from sqlalchemy_continuum.builder import Builder
 from sqlalchemy_continuum.expression_reflector import VersionExpressionReflector
 from sqlalchemy_continuum.relationship_builder import RelationshipBuilder
-from sqlalchemy_continuum.utils import adapt_columns, option
+from sqlalchemy_continuum.utils import adapt_columns
+from sqlalchemy_continuum.utils import option
 
 
 class PatchedRelationShipBuilder(RelationshipBuilder):

@@ -1,11 +1,20 @@
 from functools import wraps
 
-from flask import current_app, request
-from flask_restful import Resource, abort
-from ihatemoney.forms import EditProjectForm, MemberForm, ProjectForm, get_billform_for
-from ihatemoney.models import Bill, Person, Project, db
+from flask import current_app
+from flask import request
+from flask_restful import abort
+from flask_restful import Resource
 from werkzeug.security import check_password_hash
 from wtforms.fields.core import BooleanField
+
+from ihatemoney.forms import EditProjectForm
+from ihatemoney.forms import get_billform_for
+from ihatemoney.forms import MemberForm
+from ihatemoney.forms import ProjectForm
+from ihatemoney.models import Bill
+from ihatemoney.models import db
+from ihatemoney.models import Person
+from ihatemoney.models import Project
 
 
 def need_auth(f):

@@ -5,11 +5,11 @@ Revises: cb038f79982e
 Create Date: 2020-04-25 14:49:41.136602
 
 """
-
 # revision identifiers, used by Alembic.
-from alembic import op
-from ihatemoney.currency_convertor import CurrencyConverter
 import sqlalchemy as sa
+from alembic import op
+
+from ihatemoney.currency_convertor import CurrencyConverter
 
 revision = "927ed575acbd"
 down_revision = "cb038f79982e"

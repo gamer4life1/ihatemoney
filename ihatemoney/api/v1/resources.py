@@ -1,16 +1,15 @@
 from flask import Blueprint
 from flask_cors import CORS
 from flask_restful import Api
-from ihatemoney.api.common import (
-    BillHandler,
-    BillsHandler,
-    MemberHandler,
-    MembersHandler,
-    ProjectHandler,
-    ProjectsHandler,
-    ProjectStatsHandler,
-    TokenHandler,
-)
+
+from ihatemoney.api.common import BillHandler
+from ihatemoney.api.common import BillsHandler
+from ihatemoney.api.common import MemberHandler
+from ihatemoney.api.common import MembersHandler
+from ihatemoney.api.common import ProjectHandler
+from ihatemoney.api.common import ProjectsHandler
+from ihatemoney.api.common import ProjectStatsHandler
+from ihatemoney.api.common import TokenHandler
 
 api = Blueprint("api", __name__, url_prefix="/api")
 CORS(api)

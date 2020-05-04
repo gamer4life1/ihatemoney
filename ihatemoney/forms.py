@@ -5,24 +5,36 @@ from re import match
 import email_validator
 from flask import request
 from flask_babel import lazy_gettext as _
-from flask_wtf.file import FileAllowed, FileField, FileRequired
+from flask_wtf.file import FileAllowed
+from flask_wtf.file import FileField
+from flask_wtf.file import FileRequired
 from flask_wtf.form import FlaskForm
-from ihatemoney.currency_convertor import CurrencyConverter
-from ihatemoney.models import LoggingMode, Person, Project
-from ihatemoney.utils import eval_arithmetic_expression, slugify
 from jinja2 import Markup
-from werkzeug.security import check_password_hash, generate_password_hash
-from wtforms.fields.core import Label, SelectField, SelectMultipleField
-from wtforms.fields.html5 import DateField, DecimalField, URLField
-from wtforms.fields.simple import BooleanField, PasswordField, StringField, SubmitField
-from wtforms.validators import (
-    DataRequired,
-    Email,
-    EqualTo,
-    NumberRange,
-    Optional,
-    ValidationError,
-)
+from werkzeug.security import check_password_hash
+from werkzeug.security import generate_password_hash
+from wtforms.fields.core import Label
+from wtforms.fields.core import SelectField
+from wtforms.fields.core import SelectMultipleField
+from wtforms.fields.html5 import DateField
+from wtforms.fields.html5 import DecimalField
+from wtforms.fields.html5 import URLField
+from wtforms.fields.simple import BooleanField
+from wtforms.fields.simple import PasswordField
+from wtforms.fields.simple import StringField
+from wtforms.fields.simple import SubmitField
+from wtforms.validators import DataRequired
+from wtforms.validators import Email
+from wtforms.validators import EqualTo
+from wtforms.validators import NumberRange
+from wtforms.validators import Optional
+from wtforms.validators import ValidationError
+
+from ihatemoney.currency_convertor import CurrencyConverter
+from ihatemoney.models import LoggingMode
+from ihatemoney.models import Person
+from ihatemoney.models import Project
+from ihatemoney.utils import eval_arithmetic_expression
+from ihatemoney.utils import slugify
 
 
 def strip_filter(string):
