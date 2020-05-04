@@ -6,8 +6,6 @@ from flask import Flask, g, render_template, request, session
 from flask_babel import Babel
 from flask_mail import Mail
 from flask_migrate import Migrate, stamp, upgrade
-from werkzeug.middleware.proxy_fix import ProxyFix
-
 from ihatemoney import default_settings
 from ihatemoney.api.v1 import api as apiv1
 from ihatemoney.currency_convertor import CurrencyConverter
@@ -20,6 +18,7 @@ from ihatemoney.utils import (
     static_include,
 )
 from ihatemoney.web import main as web_interface
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 
 def setup_database(app):

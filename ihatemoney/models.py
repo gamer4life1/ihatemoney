@@ -4,6 +4,13 @@ from datetime import datetime
 from debts import settle
 from flask import current_app, g
 from flask_sqlalchemy import BaseQuery, SQLAlchemy
+from ihatemoney.patch_sqlalchemy_continuum import PatchedBuilder
+from ihatemoney.versioning import (
+    ConditionalVersioningManager,
+    LoggingMode,
+    get_ip_if_allowed,
+    version_privacy_predicate,
+)
 from itsdangerous import (
     BadSignature,
     SignatureExpired,
@@ -15,14 +22,6 @@ from sqlalchemy import orm
 from sqlalchemy.sql import func
 from sqlalchemy_continuum import make_versioned, version_class
 from sqlalchemy_continuum.plugins import FlaskPlugin
-
-from ihatemoney.patch_sqlalchemy_continuum import PatchedBuilder
-from ihatemoney.versioning import (
-    ConditionalVersioningManager,
-    LoggingMode,
-    get_ip_if_allowed,
-    version_privacy_predicate,
-)
 
 make_versioned(
     user_cls=None,

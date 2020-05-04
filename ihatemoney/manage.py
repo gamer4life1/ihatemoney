@@ -7,11 +7,10 @@ import sys
 
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Command, Manager, Option
-from werkzeug.security import generate_password_hash
-
 from ihatemoney.models import Project, db
 from ihatemoney.run import create_app
 from ihatemoney.utils import create_jinja_env
+from werkzeug.security import generate_password_hash
 
 
 class GeneratePasswordHash(Command):

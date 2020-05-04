@@ -7,6 +7,9 @@ from flask import request
 from flask_babel import lazy_gettext as _
 from flask_wtf.file import FileAllowed, FileField, FileRequired
 from flask_wtf.form import FlaskForm
+from ihatemoney.currency_convertor import CurrencyConverter
+from ihatemoney.models import LoggingMode, Person, Project
+from ihatemoney.utils import eval_arithmetic_expression, slugify
 from jinja2 import Markup
 from werkzeug.security import check_password_hash, generate_password_hash
 from wtforms.fields.core import Label, SelectField, SelectMultipleField
@@ -20,10 +23,6 @@ from wtforms.validators import (
     Optional,
     ValidationError,
 )
-
-from ihatemoney.currency_convertor import CurrencyConverter
-from ihatemoney.models import LoggingMode, Person, Project
-from ihatemoney.utils import eval_arithmetic_expression, slugify
 
 
 def strip_filter(string):

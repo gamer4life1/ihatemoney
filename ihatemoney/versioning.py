@@ -1,9 +1,8 @@
 from flask import g
+from ihatemoney.utils import FormEnum
 from sqlalchemy.orm.attributes import get_history
 from sqlalchemy_continuum import VersioningManager
 from sqlalchemy_continuum.plugins.flask import fetch_remote_addr
-
-from ihatemoney.utils import FormEnum
 
 
 class LoggingMode(FormEnum):

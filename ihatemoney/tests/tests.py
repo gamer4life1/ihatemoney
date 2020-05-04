@@ -11,14 +11,13 @@ from unittest.mock import MagicMock, patch
 
 from flask import session
 from flask_testing import TestCase
-from sqlalchemy import orm
-from werkzeug.security import check_password_hash, generate_password_hash
-
 from ihatemoney import history, models, utils
 from ihatemoney.currency_convertor import CurrencyConverter
 from ihatemoney.manage import DeleteProject, GenerateConfig, GeneratePasswordHash
 from ihatemoney.run import create_app, db, load_configuration
 from ihatemoney.versioning import LoggingMode
+from sqlalchemy import orm
+from werkzeug.security import check_password_hash, generate_password_hash
 
 # Unset configuration file env var if previously set
 os.environ.pop("IHATEMONEY_SETTINGS_FILE_PATH", None)
