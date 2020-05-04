@@ -7,12 +7,11 @@ Create Date: 2020-04-25 14:49:41.136602
 """
 
 # revision identifiers, used by Alembic.
+from ihatemoney.currency_convertor import CurrencyConverter
+import sqlalchemy as sa
+from alembic import op
 revision = "927ed575acbd"
 down_revision = "cb038f79982e"
-
-from alembic import op
-import sqlalchemy as sa
-from ihatemoney.currency_convertor import CurrencyConverter
 
 
 def upgrade():
